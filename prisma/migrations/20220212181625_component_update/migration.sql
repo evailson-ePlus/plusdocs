@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Component" ALTER COLUMN "title" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "readme" DROP NOT NULL;

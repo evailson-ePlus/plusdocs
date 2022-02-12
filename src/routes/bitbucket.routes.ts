@@ -1,12 +1,10 @@
 import { Router } from 'express'
-import { reposService } from '../services/reposService'
+import { bitbucketService } from '../services/bitbucketService'
 
-const bitBucket = Router()
+const bitBucketRoutes = Router()
 
-bitBucket.get('/', reposService.index)
-bitBucket.get('/stores', reposService.storesIndex)
-bitBucket.get('/components', reposService.componentsIndex)
+bitBucketRoutes.get('/', bitbucketService.index)
+bitBucketRoutes.get('/stores', bitbucketService.storesIndex)
+bitBucketRoutes.get('/components', bitbucketService.componentsIndex)
 
-bitBucket.put('/', reposService.saveRepos)
-
-export { bitBucket }
+export { bitBucketRoutes }

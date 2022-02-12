@@ -3,8 +3,8 @@ import { bitbucketApi } from '../services/bitbucketApi'
 import { BitbucketRepo } from '../types/global'
 import { reposView } from '../views/reposView'
 
-export const bitbucketController = {
-	async index(): Promise<BitbucketRepo[]> {
+export const bitbucketReposController = {
+	async index() {
 		const { data } = await bitbucketApi.get(
 			'/?project.name="Lojas Vtex" OR project.name="IO Blocks"'
 		)
@@ -24,13 +24,13 @@ export const bitbucketController = {
 				repos.push(...data.values)
 			}
 
-			return repos
+			return reposView.renderMany(repos)
 		}
 
-		return data.values
+		return reposView.renderMany(data.values)
 	},
 
-	async indexByType(name: string): Promise<BitbucketRepo[]> {
+	async indexByType(name: string) {
 		const { data } = await bitbucketApi.get(`/?q=project.name="${name}"`)
 		const { pagelen, size } = data
 		const pages = size / pagelen
@@ -50,5 +50,17 @@ export const bitbucketController = {
 		}
 
 		return reposView.renderMany(data.values)
+	},
+
+	async showManifestByRepoName(repoName: string): Promise<any> {
+		const { data } = await bitbucketApi.get(`/${repoName}/src/HEAD/manifest.json`)
+
+		return data
+	},
+
+	async showReadmeByRepoName(repoName: string): Promise<string> {
+		const { data } = await bitbucketApi.get(`/${repoName}/src/HEAD/docs/README.md`)
+
+		return data
 	}
 }

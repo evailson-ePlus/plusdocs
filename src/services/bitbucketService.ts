@@ -2,9 +2,21 @@ import { Request, Response } from 'express'
 import { bitbucketReposController } from '../controllers/bitbucketReposController'
 import { reposController } from '../controllers/reposController'
 
-export const reposService = {
+export const bitbucketService = {
 	async index(req: Request, res: Response) {
-		const repos = await reposController.index()
+		const repos = await bitbucketReposController.index()
+
+		return res.status(201).json({ message: 'success', repos })
+	},
+
+	async storesIndex(req: Request, res: Response) {
+		const repos = await bitbucketReposController.indexByType('Lojas Vtex')
+
+		return res.status(201).json({ message: 'success', repos })
+	},
+
+	async componentsIndex(req: Request, res: Response) {
+		const repos = await bitbucketReposController.indexByType('IO Blocks')
 
 		return res.status(201).json({ message: 'success', repos })
 	},
