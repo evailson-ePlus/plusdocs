@@ -4,7 +4,7 @@ export const storesView = {
 	render(repo: BitbucketRepo) {
 		return {
 			id: repo.uuid,
-			repoName: repo.name,
+			repoName: repo.slug,
 			type: repo.project.name
 		}
 	},

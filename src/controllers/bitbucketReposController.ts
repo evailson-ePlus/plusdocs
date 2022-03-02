@@ -52,8 +52,8 @@ export const bitbucketReposController = {
 		return reposView.renderMany(data.values)
 	},
 
-	async showManifestByRepoName(repoName: string): Promise<any> {
-		const { data } = await bitbucketApi.get(`/${repoName}/src/HEAD/manifest.json`)
+	async showManifestByRepoName(repoName: string, prefix?: string): Promise<any> {
+		const { data } = await bitbucketApi.get(`/${repoName}/src/HEAD/${prefix || ''}manifest.json`)
 
 		return data
 	},

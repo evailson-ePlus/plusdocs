@@ -2,6 +2,20 @@ import { Component } from '@prisma/client'
 import { db } from '../database'
 
 export const componentsController = {
+	async index() {
+		const components = await db.component.findMany()
+
+		return components
+	},
+
+	async showByName(name: string) {
+		const component = await db.component.findFirst({
+			where: { name: name }
+		})
+
+		return component
+	},
+
 	async create(component: any, repoId: string) {
 		const createdComponent = await db.component.create({
 			data: {
@@ -17,7 +31,9 @@ export const componentsController = {
 
 	async update(component: any, repoId: string) {
 		const createdComponent = await db.component.update({
-			data: component,
+			data: {
+				...component
+			},
 			where: { repoId }
 		})
 

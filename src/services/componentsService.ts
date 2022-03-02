@@ -2,63 +2,66 @@ import { Request, Response } from 'express'
 import { bitbucketReposController } from '../controllers/bitbucketReposController'
 import { reposController } from '../controllers/reposController'
 import { componentsController } from '../controllers/componentsController'
+import { Component } from '@prisma/client'
 
 export const componentsService = {
 	async index(req: Request, res: Response) {
-		const repos = await reposController.index()
+		const components = await componentsController.index()
 
-		return res.status(201).json({ message: 'success', repos })
+		return res.status(201).json({ message: 'success', components })
 	},
 
 	async updateComponents(req: Request, res: Response) {
 		const componentRepos = await reposController.indexByType('IO Blocks')
 
-		console.log(componentRepos)
-
 		const createdComponents = await Promise.all(
 			componentRepos.map(async (repo) => {
+				let readme: string
+				let component: {
+					name: string
+					title: string | null
+					description: string | null
+					version: string | null
+					readme: string | null
+				}
+
+				try {
+					readme = await bitbucketReposController.showReadmeByRepoName(repo.name)
+				} catch (error) {
+					readme = null
+				}
+
 				try {
 					const manifest = await bitbucketReposController.showManifestByRepoName(repo.name)
-					const readme = await bitbucketReposController.showReadmeByRepoName(repo.name)
 
-					const component = {
+					component = {
 						name: manifest.name,
-						titles: manifest.title,
+						title: manifest.title,
+						version: manifest.version,
 						description: manifest.description,
 						readme: readme
 					}
-
-					console.log(component, repo.id)
-
-					const createdComponent = await componentsController.create(component as any, repo.id)
-
-					return createdComponent
 				} catch (error) {
-					return 'not created'
+					component = {
+						name: repo.name,
+						title: null,
+						description: null,
+						version: null,
+						readme: readme
+					}
 				}
+
+				let createdComponent: Component
+
+				try {
+					createdComponent = await componentsController.update(component as any, repo.id)
+				} catch (error) {
+					createdComponent = await componentsController.create(component as any, repo.id)
+				}
+
+				return createdComponent
 			})
 		)
-
-		// const createdComponents = await Promise.all(
-		// 	components.map(async (component) => {
-		// 		return await componentsController.create(component as any)
-		// 	})
-		// )
-		// const manifest = await bitbucketReposController.showManifestByRepoName(componentRepos)
-
-		// const updatedRepos = await Promise.all(
-		// 	bitbucketComponentRepos.map(async (repo) => {
-		// 		let updatedRepos
-
-		// 		try {
-		// 			updatedRepos = await reposController.create(repo)
-		// 		} catch (err) {
-		// 			updatedRepos = await reposController.update(repo)
-		// 		}
-
-		// 		return updatedRepos
-		// 	})
-		// )
 
 		return res.status(200).json({ message: 'success', createdComponents })
 	}

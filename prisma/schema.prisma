@@ -16,6 +16,7 @@ model Repo {
   link String
   type String
   component Component?
+  store Store?
 }
 
 model Component {
@@ -27,4 +28,23 @@ model Component {
   readme String?
   repo Repo @relation(fields: [repoId], references: [id])
   repoId String
+  stores ComponentsOnStores[]
+}
+
+
+model Store {
+  id String @id @default(uuid())
+  name String
+  type String
+  repo Repo @relation(fields: [repoId], references: [id])
+  repoId String
+  components ComponentsOnStores[]
+}
+
+model ComponentsOnStores {
+  component Component @relation(fields: [componentId], references: [id])
+  componentId String
+  store Store @relation(fields: [storeId], references: [id])
+  storeId String
+  @@id([componentId])
 }

@@ -4,7 +4,7 @@ export const reposView = {
 	render(repo: BitbucketRepo) {
 		return {
 			id: repo.uuid.replace('{', '').replace('}', ''),
-			name: repo.name,
+			name: repo.slug,
 			link: repo.links.html.href,
 			type: repo.project.name
 		}
