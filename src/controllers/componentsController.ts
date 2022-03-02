@@ -16,6 +16,14 @@ export const componentsController = {
 		return component
 	},
 
+	async indexByRepoId(repoId: string) {
+		const components = await db.component.findMany({
+			where: { repoId: repoId }
+		})
+
+		return components
+	},
+
 	async create(component: any, repoId: string) {
 		const createdComponent = await db.component.create({
 			data: {

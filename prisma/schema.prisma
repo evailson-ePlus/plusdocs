@@ -46,5 +46,5 @@ model ComponentsOnStores {
   componentId String
   store Store @relation(fields: [storeId], references: [id])
   storeId String
-  @@id([componentId])
+  @@id([componentId, storeId])
 }

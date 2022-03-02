@@ -34,35 +34,33 @@ export const storesService = {
 			)
 
 			try {
-				if (repo.name == 'binne-comfort') {
-					manifest = await bitbucketReposController.showManifestByRepoName(repo.name, 'src/')
+				// if (repo.name == 'binne-comfort') {
+				manifest = await bitbucketReposController.showManifestByRepoName(repo.name, 'src/')
 
-					const { dependencies } = manifest
+				const { dependencies } = manifest
 
-					const componentsNames = [
-						...new Set(Object.keys(dependencies).map((dependency) => dependency.split('.')[1]))
-					]
+				const componentsNames = [
+					...new Set(Object.keys(dependencies).map((dependency) => dependency.split('.')[1]))
+				]
 
-					for (let i = 0; i < componentsNames.length; i++) {
-						try {
-							storeComponentsIds.push(
-								(await componentsController.showByName(componentsNames[i])).id
-							)
-						} catch (error) {
-							// console.log(error)
-						}
+				for (let i = 0; i < componentsNames.length; i++) {
+					try {
+						storeComponentsIds.push((await componentsController.showByName(componentsNames[i])).id)
+					} catch (error) {
+						// console.log(error)
 					}
-
-					console.log(componentsNames)
-
-					isIo = true
 				}
+
+				// console.log(componentsNames)
+
+				isIo = true
+				// }
 			} catch (error) {
 				// console.log(error)
 			}
 
 			if (isIo) {
-				console.log(storeComponentsIds)
+				// console.log(storeComponentsIds)
 
 				try {
 					createdStore = await storesController.update(
@@ -74,7 +72,7 @@ export const storesService = {
 						storeComponentsIds
 					)
 				} catch (error) {
-					console.log(error)
+					// console.log(error)
 					createdStore = await storesController.create(
 						{
 							name: repo.name,

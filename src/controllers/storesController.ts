@@ -1,13 +1,25 @@
 import { db } from '../database'
+import { componentsController } from './componentsController'
 
 export const storesController = {
 	async index() {
-		const stores = await db.store.findMany()
+		const stores = await db.store.findMany({
+			include: {
+				components: {
+					include: {
+						component: true
+					}
+				},
+				repo: true
+			}
+		})
 
 		return stores
 	},
 
 	async create(store: any, repoId: string, componentIds: string[]) {
+		console.log(componentIds)
+
 		const createdStore = await db.store.create({
 			data: {
 				...store,
@@ -23,13 +35,21 @@ export const storesController = {
 		return createdStore
 	},
 
-	async update(component: any, repoId: string, componentIds: string[]) {
+	async update(store: any, repoId: string, componentsIds: string[]) {
+		const componentsInStore = await componentsController.indexByRepoId(repoId)
+
+		const newComponentsIds = componentsIds.filter((componentId) => {
+			return componentsInStore.some((component) => component.id === componentId)
+		})
+
+		console.log(newComponentsIds)
+
 		const updated = await db.store.update({
 			data: {
-				...component
-				// components: {
-				// 	create: { componentId: 'e83f3b32-f5f0-47b6-ac8c-3566840b0062' }
-				// }
+				...store,
+				components: {
+					create: { componentId: 'e83f3b32-f5f0-47b6-ac8c-3566840b0062' }
+				}
 			},
 			where: { repoId }
 		})
