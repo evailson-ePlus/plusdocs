@@ -8,6 +8,22 @@ export const componentsController = {
 		return components
 	},
 
+	async show(id: string) {
+		const component = await db.component.findFirst({
+			where: { id },
+			include: {
+				repo: true,
+				stores: {
+					include: {
+						store: true
+					}
+				}
+			}
+		})
+
+		return component
+	},
+
 	async showByName(name: string) {
 		const component = await db.component.findFirst({
 			where: { name: name }

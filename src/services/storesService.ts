@@ -10,7 +10,17 @@ import { timeout } from '../utils/timeout'
 export const storesService = {
 	async index(req: Request, res: Response) {
 		const stores = await storesController.index()
-		return res.status(200).json({ message: 'Index', stores })
+		return res.status(200).json({ message: 'Success', stores })
+	},
+
+	async show(req: Request, res: Response) {
+		const id = req.params.id
+
+		console.log(id)
+
+		const store = await storesController.show(id)
+
+		return res.status(200).json({ message: 'Success', store })
 	},
 
 	async update(req: Request, res: Response) {

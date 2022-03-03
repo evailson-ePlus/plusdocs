@@ -5,16 +5,31 @@ export const storesController = {
 	async index() {
 		const stores = await db.store.findMany({
 			include: {
+				repo: true
+			}
+		})
+
+		return stores
+	},
+
+	async show(id: string) {
+		const store = await db.store.findFirst({
+			where: { id },
+			include: {
 				components: {
 					include: {
-						component: true
+						component: {
+							include: {
+								repo: true
+							}
+						}
 					}
 				},
 				repo: true
 			}
 		})
 
-		return stores
+		return store
 	},
 
 	async create(store: any, repoId: string, componentIds: string[]) {
@@ -48,7 +63,7 @@ export const storesController = {
 			data: {
 				...store,
 				components: {
-					create: { componentId: 'e83f3b32-f5f0-47b6-ac8c-3566840b0062' }
+					create: newComponentsIds
 				}
 			},
 			where: { repoId }

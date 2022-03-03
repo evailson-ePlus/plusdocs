@@ -11,6 +11,14 @@ export const componentsService = {
 		return res.status(201).json({ message: 'success', components })
 	},
 
+	async show(req: Request, res: Response) {
+		const id = req.params.id
+
+		const component = await componentsController.show(id)
+
+		return res.status(201).json({ message: 'success', component })
+	},
+
 	async updateComponents(req: Request, res: Response) {
 		const componentRepos = await reposController.indexByType('IO Blocks')
 
